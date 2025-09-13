@@ -1,7 +1,7 @@
 /*
 Name: Bharath Raj Buyyakar
 Date: 7-02-2025
-Description: Project on Stegnography
+Description: Project on Steganography
 */
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +11,7 @@ Description: Project on Stegnography
 
 int main(int argc, char **argv)
 {
-    if (check_operation_type(argv) == e_encode)
+    if (check_operation_type(argc, argv) == e_encode)
     {
         printf("Selected operation is encoding\n");
         EncodeInfo encoding_structure;
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
             return e_failure;
         }
     }
-    else if (check_operation_type(argv) == e_decode)
+    else if (check_operation_type(argc, argv) == e_decode)
     {
         printf("Selected operation is decoding\n");
         DecodeInfo decoding_structure;
@@ -66,8 +66,12 @@ int main(int argc, char **argv)
     }
     return e_success;
 }
-OperationType check_operation_type(char *argv[])
+OperationType check_operation_type(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        return e_unsupported;
+    }
     if (strcmp(argv[1], "-e") == 0)
     {
         return e_encode;
@@ -77,6 +81,10 @@ OperationType check_operation_type(char *argv[])
         return e_decode;
     }
     else
+    {
+        return e_unsupported;
+    }
+}   else
     {
         return e_unsupported;
     }

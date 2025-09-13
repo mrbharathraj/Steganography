@@ -28,11 +28,6 @@ uint get_image_size_for_bmp(FILE *fptr_image)
     printf("height = %u\n", height);
 
     
-    /*fseek(fptr_image, 2, SEEK_SET);
-    unsigned int size;
-    fread(&size, 4, 1, fptr_image);
-    printf("%u\n", width * height * 3);
-    printf("%u\n", size);*/
     // Return image capacity
     return width * height * 3;
 }
@@ -197,14 +192,20 @@ Status encode_secret_file_data(EncodeInfo *encInfo)
    fseek(encInfo->fptr_secret, 0, SEEK_SET);
    char str[encInfo->size_secret_file];
    fread(str, encInfo->size_secret_file, 1, encInfo->fptr_secret);
+Status encode_secret_file_data(EncodeInfo *encInfo)
+{
+   fseek(encInfo->fptr_secret, 0, SEEK_SET);
+   char *str = (char *)malloc(encInfo->size_secret_file);
+   if (str == NULL)
+   {
+       fprintf(stderr, "ERROR: Unable to allocate memory for secret file data\n");
+       return e_failure;
+   }
+   fread(str, encInfo->size_secret_file, 1, encInfo->fptr_secret);
    encode_data_to_image(str, encInfo->size_secret_file, encInfo);
+   free(str);
    return e_success;
 }
-Status copy_remaining_img_data(FILE *fptr_src, FILE *fptr_dest)
-{
-    char ch;
-    while (fread(&ch, 1, 1, fptr_src) > 0)
-    {
         fwrite(&ch, 1, 1, fptr_dest);
     }
     return e_success;
